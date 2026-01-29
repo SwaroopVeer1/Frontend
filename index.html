@@ -86,8 +86,7 @@
   </div>
 
   <script>
-    const ENDPOINT_URL = "YOUR_SERVERLESS_ENDPOINT_URL";
-
+    const ENDPOINT_URL = "https://api.runpod.ai/v2/e2e5pabk4d5obl/run";
     async function generateImage() {
       const prompt = document.getElementById("prompt").value;
       const status = document.getElementById("status");
@@ -100,8 +99,9 @@
         const response = await fetch(ENDPOINT_URL, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
-          },
+        "Content-Type": "application/json",
+        "Authorization": "Bearer rpa_TW3BHJ847JL6KXQYUV5VRKRNXHT62HOB29KLQA73cabf6c"
+      },
           body: JSON.stringify({
             input: {
               prompt: prompt,
@@ -133,3 +133,5 @@
 
 </body>
 </html>
+
+
