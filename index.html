@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>FLUX Text to Image</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b1220;
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 700px;
+      padding: 30px;
+      background: #111827;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: none;
+      outline: none;
+      margin-bottom: 15px;
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .status {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #cbd5f5;
+    }
+
+    img {
+      margin-top: 25px;
+      max-width: 100%;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>🖼️ FLUX Text → Image</h1>
+
+    <input
+      id="prompt"
+      type="text"
+      placeholder="Describe the image you want..."
+      value="A futuristic city at sunset, ultra detailed"
+    />
+
+    <button onclick="generateImage()">Generate Image</button>
+
+    <div class="status" id="status"></div>
+    <div id="output"></div>
+  </div>
+
+  <script>
+    const ENDPOINT_URL = "YOUR_SERVERLESS_ENDPOINT_URL";
+
+    async function generateImage() {
+      const prompt = document.getElementById("prompt").value;
+      const status = document.getElementById("status");
+      const output = document.getElementById("output");
+
+      status.innerText = "⏳ Generating image, please wait...";
+      output.innerHTML = "";
+
+      try {
+        const response = await fetch(ENDPOINT_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            input: {
+              prompt: prompt,
+              width: 1024,
+              height: 1024,
+              steps: 30
+            }
+          })
+        });
+
+        const data = await response.json();
+
+        if (!data.image) {
+          throw new Error("No image returned");
+        }
+
+        const img = document.createElement("img");
+        img.src = "data:image/png;base64," + data.image;
+
+        output.appendChild(img);
+        status.innerText = "✅ Image generated";
+
+      } catch (error) {
+        console.error(error);
+        status.innerText = "❌ Failed to generate image";
+      }
+    }
+  </script>
+
+</body>
+</html>
